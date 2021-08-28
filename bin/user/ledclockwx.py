@@ -26,7 +26,7 @@ except ImportError:
     from urllib2 import urlopen, Request, HTTPError
 
 
-DRIVER_VERSION = "0.01"
+SERVICE_VERSION = "0.01"
 
 def logmsg(level, msg):
     syslog.syslog(level, 'ledclock: %s' % msg)
@@ -74,6 +74,9 @@ class LedClockwx(StdService):
 
       self.luxKeys = surely_a_list(self.ledclock_dict.get('luxKeys', 'inLux'))
       self.openKeys = surely_a_list(self.ledclock_dict.get('openKeys', 'open'))
+      self.request_interval = self.ledclock_dict.get('request_interval', 300)
+      self.last_request = -1
+      self.ledclockdata = None
 
       loginf('fallback default units: %s' % weewx.units.unit_nicknames[self.default_units])
 
@@ -84,19 +87,20 @@ class LedClockwx(StdService):
     def new_loop_packet(self, event):
 
         packet = event.packet
+        # print("{}+{} < {}".format(self.last_request, self.request_interval, time.time()))
+        if self.last_request+self.request_interval < time.time():
+            f = urlopen(self.url)
+            self.ledclockdata = f.read().decode('utf-8')
+            loginf('ledclock data %s' % self.ledclockdata)
+            self.last_request = time.time()
 
-        f = urlopen(self.url)
-        ledclockdata = f.read().decode('utf-8')
-
-        loginf('ledclock data %s' % ledclockdata)
-
-        if ledclockdata is None:
+        if self.ledclockdata is None:
             return
 
         try:
-            json_data = json.loads(ledclockdata)
+            json_data = json.loads(self.ledclockdata)
         except ValueError:
-            json_data = ast.literal_eval(ledclockdata)
+            json_data = ast.literal_eval(self.ledclockdata)
         # If there is a declared set of units already, we'll convert to that.
         # If there isn't, we'll accept the configured wisdom.
         if 'usUnits' in packet:
@@ -158,7 +162,7 @@ if __name__ == '__main__':
             debug = options.debug
 
         if options.version:
-            print("ledclockwx version %s" % DRIVER_VERSION)
+            print("ledclockwx version %s" % SERVICE_VERSION)
             exit(1)
 
         min_config_dict = {

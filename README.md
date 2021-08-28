@@ -12,11 +12,11 @@ pressure, and humidity readings from json provided by
 * [weewx](https://weewx.com). Should work with any recent version. Tested with weewx 3.9.1 and 4.1.0.
 * python 2.7 or python 3.x. You will already have a suitable python version if you are running weewx.
 
-Download the compressed archive https://github.com/mproctor13/ledclockw/??-master.zip of this project to any convenient temporary directory.
+Download the compressed archive https://github.com/mproctor13/ledclockwx/archive/refs/heads/master.zip of this project to any convenient temporary directory.
 
 Run the extensions installer:
 ```
-wee_extension --install ledclockwx-master.zip
+wee_extension --install master.zip
 ```
 Restart weewx using these steps or your favorite local variant:
 ```
@@ -42,7 +42,7 @@ If you want to upgrade to a newer version of this extension,
 simply uninstall the old version and install the new version, as noted above.
 However, during the uninstall, the extension manager will remove the configuration settings (described in the next section).
 If you have modified any of them, make a note of them before the uninstall.
-(One easy way to do that is to simply rename the `[ledclockwx]` section to something else.
+(One easy way to do that is to simply rename the `[LedClockwx]` section to something else.
 That will prevent the extension manager from removing the whole section.)
 
 ## Configuration

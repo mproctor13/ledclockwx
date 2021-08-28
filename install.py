@@ -1,14 +1,14 @@
 # installer for ledclockwx extension
 
 from setup import ExtensionInstaller
-
+from bin.user.ledclockwx import SERVICE_VERSION
 def loader():
     return LedClockwxInstaller()
 
 class LedClockwxInstaller(ExtensionInstaller):
     def __init__(self):
         super(LedClockwxInstaller, self).__init__(
-            version="1.0",
+            version=DRIVER_VERSION,
             name='ledclockwx',
             description='Add ledclock sensor readings to loop packet data',
             author="Michael Proctor-Smith",
